@@ -2,15 +2,14 @@
 
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import AuthWrapper from './AuthWrapper';
 
 const VulnerabilityDashboard = () => {
   const [activeTab, setActiveTab] = useState('grype');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
 
-  // Placeholder CVE details - you can replace this with your actual data
   const cveDetails = {
-    // Format: 'repoName_severity_tool': [array of CVE objects]
     'oam_oam-controller_critical_snyk': [
     { severity: 'CRITICAL', package: 'maven', cve: '-', description: 'Deserialization of Untrusted Data', installedVersion: '-', fixedVersion: '-' },
   ],
@@ -10313,7 +10312,7 @@ const VulnerabilityDashboard = () => {
   const computeMostCommonCVEs = (cveDetails) => {
     console.log("cveDetails", cveDetails);
   
-    const cveMap = {}; // key: CVE/description, value: { severity, package, description, count, affectedRepos }
+    const cveMap = {};
   
     Object.entries(cveDetails).forEach(([repoName, severitiesArray]) => {
       console.log("repoName:", repoName, "severitiesArray:", severitiesArray);
@@ -10345,11 +10344,10 @@ const VulnerabilityDashboard = () => {
   
     console.log("cveMap", cveMap);
   
-    // sort by occurrences descending and take top N (e.g., top 10)
     return Object.entries(cveMap)
       .map(([id, data]) => ({ id, ...data }))
       .sort((a, b) => b.occurrences - a.occurrences)
-      .slice(0, 10);
+      .slice(0, 20);
   };
   
 
@@ -10379,7 +10377,6 @@ const VulnerabilityDashboard = () => {
 
   const mostCommonCVEs = computeMostCommonCVEs(cveDetails);
 
-  // Grype data - sorted by total vulnerabilities
   const gryperData = [
     { repo: 'nonrtric', critical: 2, high: 22, medium: 45, low: 5, total: 74 },
     { repo: 'nonrtric_plt_sme', critical: 6, high: 26, medium: 69, low: 4, total: 105 },
@@ -10433,7 +10430,6 @@ const VulnerabilityDashboard = () => {
     { repo: 'portal_nonrtric-controlpanel', critical: 0, high: 0, medium: 0, low: 0, total: 0 },
   ].sort((a, b) => b.total - a.total);
 
-  // Snyk data - sorted by total vulnerabilities
   const snykData = [
     { repo: 'nonrtric', critical: 10, high: 439, medium: 126, low: 18, total: 593 },
     { repo: 'nonrtric/plt/sme', critical: 0, high: 245, medium: 48, low: 4, total: 297 },
@@ -10487,7 +10483,6 @@ const VulnerabilityDashboard = () => {
     { repo: 'portal/nonrtric-controlpanel', critical: 0, high: 0, medium: 0, low: 0, total: 0 },
   ].sort((a, b) => b.total - a.total);
 
-  // Critical CVEs comparison
   const criticalCVEs = [
     { repo: 'nonrtric', snyk: 10, grype: 2 },
     { repo: 'nonrtric_plt_sme', snyk: 0, grype: 6 },
@@ -10498,7 +10493,6 @@ const VulnerabilityDashboard = () => {
     { repo: 'smo_teiv', snyk: 0, grype: 1 },
   ].sort((a, b) => (b.snyk + b.grype) - (a.snyk + a.grype));
 
-  // High CVEs comparison
   const highCVEs = [
     { repo: 'nonrtric', snyk: 439, grype: 22 },
     { repo: 'nonrtric_plt_sme', snyk: 245, grype: 26 },
@@ -10560,6 +10554,7 @@ const VulnerabilityDashboard = () => {
   };
 
   return (
+    <AuthWrapper>
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto mb-6">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">O-RAN-SC Vulnerability Scan Report</h1>
@@ -10895,6 +10890,7 @@ const VulnerabilityDashboard = () => {
     </div>
       </div>
     </div>
+    </AuthWrapper>
   );
 };
 
